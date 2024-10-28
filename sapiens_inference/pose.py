@@ -27,12 +27,13 @@ class SapiensPoseEstimationType(Enum):
 class SapiensPoseEstimation:
     def __init__(self,
                  type: SapiensPoseEstimationType = SapiensPoseEstimationType.POSE_ESTIMATION_03B,
+                 cache_dir: str = "model_cache",
                  device: torch.device = torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                  dtype: torch.dtype = torch.float32):
         # Load the model
         self.device = device
         self.dtype = dtype
-        path = download_hf_model(type.value)
+        path = download_hf_model(model_name=type.value, model_dir=cache_dir)
         self.model = torch.jit.load(path).eval().to(device).to(dtype)
         self.preprocessor = pose_estimation_preprocessor(input_size=(1024, 768))
 
